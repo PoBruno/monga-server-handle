@@ -1,7 +1,7 @@
-# Moga Server Handle
-
 [![GitHub Repo Views](https://img.shields.io/badge/dynamic/json?color=blue&label=Repo%20Views&query=total_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FMongaDev%2Fmoga-server-handle)](https://github.com/MongaDev/moga-server-handle)
 [![Last GitHub Action](https://img.shields.io/github/workflow/status/MongaDev/moga-server-handle/Start%20Game%20Server?label=Last%20Action&logo=github)](https://github.com/MongaDev/moga-server-handle/actions)
+
+# Moga Server Handle
 
 Repository for managing Docker images and GitHub Actions related to game servers. This repository includes scripts for starting, stopping, and backing up game servers using Docker Compose and GitHub Actions.
 
