@@ -1,5 +1,5 @@
-[![GitHub Repo Views](https://img.shields.io/badge/dynamic/json?color=blue&label=Repo%20Views&query=total_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2FMongaDev%2Fmoga-server-handle)](https://github.com/MongaDev/moga-server-handle)
-[![Last GitHub Action](https://img.shields.io/github/workflow/status/MongaDev/moga-server-handle/Start%20Game%20Server?label=Last%20Action&logo=github)](https://github.com/MongaDev/moga-server-handle/actions)
+[![GitHub Repo Views](https://img.shields.io/badge/dynamic/json?color=blue&label=Repo%20Views&query=total_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fpobruno%2Fmoga-server-handle)](https://github.com/pobruno/moga-server-handle)
+[![Last GitHub Action](https://img.shields.io/github/workflow/status/pobruno/moga-server-handle/Start%20Game%20Server?label=Last%20Action&logo=github)](https://github.com/pobruno/moga-server-handle/actions)
 
 # Moga Server Handle
 
