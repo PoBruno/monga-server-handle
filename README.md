@@ -1,5 +1,9 @@
-[![GitHub Repo Views](https://img.shields.io/badge/dynamic/json?color=blue&label=Repo%20Views&query=total_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fpobruno%2Fmoga-server-handle)](https://github.com/pobruno/moga-server-handle)
-[![Last GitHub Action](https://img.shields.io/github/workflow/status/pobruno/moga-server-handle/Start%20Game%20Server?label=Last%20Action&logo=github)](https://github.com/pobruno/moga-server-handle/actions)
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/pobruno/monga-server-data)
+[![GitHub repo size](https://img.shields.io/github/repo-size/pobruno/monga-server-data?label=monga-server-data&logo=git&logoColor=orang)](https://github.com/pobruno/monga-server-data)
+![GitHub top language](https://img.shields.io/github/languages/top/pobruno/monga-server-data?logo=docker)
+![GitHub language count](https://img.shields.io/github/languages/count/pobruno/monga-server-data)
+![GitHub issues](https://img.shields.io/github/issues/pobruno/monga-server-data?logo=github)
 
 # Moga Server Handle
 
