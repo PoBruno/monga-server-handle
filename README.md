@@ -56,10 +56,15 @@ cd moga-server-handle/project-zomboid
 docker-compose down
 ```
 
-Backing Up Game Saves:
-Backups are automated through GitHub Actions on each push event.
+# Backing Up Game Saves:
 
-Contributions:
+Backups are automated on repo (monga-server-data)[https://github.com/pobruno/monga-server-data] through GitHub Actions on each push event.
+
+# Contributions:
+
 Contributions and feedback are welcome. If you encounter issues or want to add support for additional games, create a pull request or open an issue.
 
-This repository is part of the MongaDev organization's tech and development experiments.
+---
+
+_This repository is part of the MongaDev organization's tech and development experiments._
+
