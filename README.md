@@ -58,7 +58,7 @@ docker-compose down
 
 # Backing Up Game Saves:
 
-Backups are automated on repo (monga-server-data)[https://github.com/pobruno/monga-server-data] through GitHub Actions on each push event.
+Backups are automated on repo [monga-server-data](https://github.com/pobruno/monga-server-data) through GitHub Actions on each push event.
 
 # Contributions:
 
