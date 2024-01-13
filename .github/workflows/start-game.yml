@@ -1,0 +1,21 @@
+name: Start Game Server
+on: workflow_dispatch
+
+jobs:
+  start:
+    name: Start Game Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: SSH into Server and Start Game
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # Add your start game script here
