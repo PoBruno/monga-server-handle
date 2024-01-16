@@ -19,12 +19,17 @@ jobs:
       run: |
 
         # Starting a prompt to console
-        set -x
+        #set -x
         echo "Starting Deploy" >> /home/monga/log.txt && echo "Starting Deploy"
         echo "Deployed at $(date +"%d%m%y-%HH%M")" >> /home/monga/log.txt && echo "Deployed at $(date +"%d%m%y-%HH%M")"
-        echo "Current User - $(whoami)" >> /home/monga/log.txt && echo "Current User - $(whoami)"
+        sudo -u monga echo "Current User - $(whoami)" >> /home/monga/log.txt && echo "Current User - $(whoami)"
         sudo apt update && sudo apt upgrade -y
 
+        # Step Update Ubuntu
+        # Update repo apps.
+        sudo apt-get update
+        sudo apt-get upgrade
+        # # # # # # # # # # #
 
         # Workflow Repository - {Clone -or Pull}
         # Verify if repository 'monga-server-handle' exist
@@ -32,22 +37,20 @@ jobs:
           # Repository 'monga-server-handle' Found! Pulling...
           echo "Repository 'monga-server-handle' Found! Pulling..." >> /home/monga/log.txt && echo "Repository 'monga-server-handle' Found! Pulling..."
           # Git Pull
-          cd /home/monga/monga-server-handle
-          git fetch --all
-          git reset --hard origin/master
-          git pull origin master
+          sudo -u monga bash -c "cd ~ && ls"
+          sudo -u monga bash -c "git fetch --all"
+          sudo -u monga bash -c "git reset --hard origin/master"
+          sudo -u monga bash -c "git pull origin master"
         else
           # Repository 'monga-server-handle' not exist. Cloning...
           echo "Repository 'monga-server-handle' not exist. Cloning..." >> /home/monga/log.txt && echo Repository 'monga-server-handle' not exist. Cloning..."
           # Clone Git Repository
-          echo $(pwd)
-          cd /home/monga/
+          sudo -u monga bash -c "echo $(pwd)"
+          sudo -u monga bash -c "cd ~ && ls"
           echo "Git Clone monga-server-handle - $(pwd)" >> /home/monga/log.txt && echo "Git Clone monga-server-handle - $(pwd)"
-          git clone https://github.com/pobruno/monga-server-handle
+          sudo -u monga bash -c "cd ~ && git clone https://github.com/pobruno/monga-server-handle"
         fi
 
-
-        
         # Workflow Docker Container - {Deploy}
         # Verify if Docker are installed
         if docker --version &> /dev/null; then
@@ -67,13 +70,12 @@ jobs:
           sudo systemctl start docker
           sudo systemctl enable docker
           sudo usermod -aG docker $USER
-          # Test Docker Installation
+
+          #Only Verification: Test Docker Installation
           if docker --version &> /dev/null; then
-            # Docker successfully installed
             echo "Docker Successfully Installed!" >> /home/monga/log.txt && echo "Docker Successfully Installed!"
             echo "Docker- $(docker --version)" >> /home/monga/log.txt && echo "Docker- $(docker --version)"
           else
-            # Some Error to install Docker
             echo "Some Error to install Docker" >> /home/monga/log.txt && echo "Some Error to install Docker"
           fi
         fi
@@ -87,24 +89,30 @@ jobs:
         else
           # Docker-Compose not installed detected
           echo "Installing Docker-Compose" >> /home/monga/log.txt && echo "Installing Docker-Compose"
-          # Install Docker-Compose on Ubuntu 20.04
-          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-          # Test Docker-Compose Installation
+          # Install Docker-Compose on Ubuntu 20.04 (my user 'monga')
+          sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt update
+          sudo apt install docker-ce docker-ce-cli containerd.io
+          curl -fsSL https://get.docker.com | bash
+          sudo usermod -aG docker ${{ secrets.SERVER_USERNAME }}}
+          sudo systemctl enable docker
+
+          #Only Verification: Docker-Compose Installation
           if docker-compose --version &> /dev/null; then
-            # Docker-Compose Installed Detected
             echo "Docker-Compose Successfully Installed!" >> /home/monga/log.txt && echo "Docker-Compose Successfully Installed!"
             echo "Version- $(docker-compose --version)" >> /home/monga/log.txt && echo "Version- $(docker-compose --version)"
           else
-            # Some Error to Install Docker-Compose
             echo "Some Error to Install Docker-Compose" >> /home/monga/log.txt && echo "Some Error to Install Docker-Compose"
           fi
         fi
 
-        # Update your software repositories.
+        # Step Update Ubuntu
+        # Update repo apps.
         sudo apt-get update
         sudo apt-get upgrade
+        # # # # # # # # # # #
 
         # Workflow Web Portainer
         # Verify if docker container 'portainer-web-docker' exist
@@ -118,7 +126,8 @@ jobs:
           docker ps -q --filter "name=portainer-web-docker" >> /home/monga/log.txt && docker ps -q --filter "name=portainer-web-docker"
         fi
 
-        # Complete configuration Ubuntu: Startship, Nerd-Fonts, LSD, ZSH, Oh-My-Zsh
+        # Workflow Terminal Profile
+        # Complete configuration Ubuntu Terminal Profile
         echo "Configure Terminal Profile"
         echo $(pwd)
         cd /home/monga/monga-server-handle/server-config/Server-Ubuntu
@@ -128,10 +137,8 @@ jobs:
         
         # Finalize /home/monga/log.txt
         echo "Finalize Deploy" >> /home/monga/log.txt && echo "Finalize Deploy"
-
         cat /home/monga/log.txt
-        LogTime=$(date +"%d%m%y-%HH%M")
-        mv /home/monga/log.txt $LogTime.txt
+        LogTime=$(date +"%d%m%y-%HH%M") && mv /home/monga/log.txt $LogTime.txt
 
         # Clone Git Repository
         #pwd >> /home/monga/log.txt
