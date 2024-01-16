@@ -1,0 +1,59 @@
+name: Deploy Docker Container
+
+on: workflow_dispatch # or push, pull_request, schedule, repository_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: SSH and Docker
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install Docker and Docker-Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        sudo apt-get install -y docker-compose
+        docker-compose --version
+        
+        # Complete configuration Ubuntu: Startship, Nerd-Fonts, LSD, ZSH, Oh-My-Zsh
+        # Update your software repositories.
+        sudo apt-get update
+        sudo apt-get upgrade
+
+        # Install Git.
+        sudo apt-get install -y git
+
+        # Install Vim.
+        sudo apt-get install -y vim
+
+
+    - name: Verify Docker Installation
+      run: |
+        docker --version
+        docker-compose --version
+    - name: Run Portainer Docker Container
+      run: |
+        docker run -d -p 9090:9090 --name portainer-web-docker -v data:/data -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer --restart unless-stopped
+    - name: Clone Git Repository
+      run: |
+        git clone https://github.com/pobruno/monga-server-handle
+        cd monga-server-handle/.config/Server-Ubuntu
+        ./install_powerline.sh
+        ./install_terminal.sh
+        ./install_profile.sh
+
+
+
+
+
+
+
+      
