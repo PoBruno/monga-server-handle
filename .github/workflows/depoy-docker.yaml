@@ -18,10 +18,13 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y docker.io
+        sudo apt-get install -y docker-compose
+
+        # Install specific versions to avoid conflicts
+        sudo apt-get install -y containerd.io=1.4.9-1 docker-ce=5:20.10.10~3-0~ubuntu-jammy docker-ce-cli=5:20.10.10~3-0~ubuntu-jammy
+
         sudo systemctl start docker
         sudo systemctl enable docker
-        sudo apt-get install -y docker-compose
-        docker-compose --version
         
         # Complete configuration Ubuntu: Startship, Nerd-Fonts, LSD, ZSH, Oh-My-Zsh
         # Update your software repositories.
