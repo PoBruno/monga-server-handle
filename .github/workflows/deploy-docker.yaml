@@ -1,6 +1,6 @@
 name: Deploy Docker Container
 
-on: workflow_dispatch # or push, pull_request, schedule, repository_dispatch
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -18,35 +18,140 @@ jobs:
     - name: Install Docker and Docker-Compose
       run: |
 
-        # Initial Update Linux
+        # Starting a prompt to console
+        set -x
+        echo "Starting Deploy" >> /home/monga/log.txt && echo "Starting Deploy"
+        echo "Deployed at $(date +"%d%m%y-%HH%M")" >> /home/monga/log.txt && echo "Deployed at $(date +"%d%m%y-%HH%M")"
+        echo "Current User - $(whoami)" >> /home/monga/log.txt && echo "Current User - $(whoami)"
         sudo apt update && sudo apt upgrade -y
 
-        # Clone Git Repository
-        cd /home/monga/
-        git clone https://github.com/pobruno/monga-server-handle
-        cd cd /home/monga/monga-server-handle/.config/Server-Ubuntu
 
-        # Install Docker and Docker-Compose on Ubuntu 20.04 with best practices
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sudo sh get-docker.sh
-        sudo usermod -aG docker $USER
-        sudo systemctl enable docker
-        sudo apt-get install -y docker-compose
-        sudo systemctl enable docker-compose
+        # Workflow Repository - {Clone -or Pull}
+        # Verify if repository 'monga-server-handle' exist
+        if [ -d "/home/monga/monga-server-handle" ]; then
+          # Repository 'monga-server-handle' Found! Pulling...
+          echo "Repository 'monga-server-handle' Found! Pulling..." >> /home/monga/log.txt && echo "Repository 'monga-server-handle' Found! Pulling..."
+          # Git Pull
+          cd /home/monga/monga-server-handle
+          git fetch --all
+          git reset --hard origin/master
+          git pull origin master
+        else
+          # Repository 'monga-server-handle' not exist. Cloning...
+          echo "Repository 'monga-server-handle' not exist. Cloning..." >> /home/monga/log.txt && echo Repository 'monga-server-handle' not exist. Cloning..."
+          # Clone Git Repository
+          echo $(pwd)
+          cd /home/monga/
+          echo "Git Clone monga-server-handle - $(pwd)" >> /home/monga/log.txt && echo "Git Clone monga-server-handle - $(pwd)"
+          git clone https://github.com/pobruno/monga-server-handle
+        fi
+
 
         
+        # Workflow Docker Container - {Deploy}
+        # Verify if Docker are installed
+        if docker --version &> /dev/null; then
+          # Docker installed detected
+          echo "Docker installed detected" >> /home/monga/log.txt && echo "Docker installed detected"
+          echo "Version- $(docker --version)" >> /home/monga/log.txt && echo "Version- $(docker --version)"
+        else
+          # Docker not installed detected
+          echo "Installing Docker..." >> /home/monga/log.txt && echo "Installing Docker..."
+          # Install Docker on Ubuntu 20.04
+          echo "Installing Docker" >> /home/monga/log.txt && echo "Installing Docker"
+          sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt update
+          sudo apt install -y docker-ce
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo usermod -aG docker $USER
+          # Test Docker Installation
+          if docker --version &> /dev/null; then
+            # Docker successfully installed
+            echo "Docker Successfully Installed!" >> /home/monga/log.txt && echo "Docker Successfully Installed!"
+            echo "Docker- $(docker --version)" >> /home/monga/log.txt && echo "Docker- $(docker --version)"
+          else
+            # Some Error to install Docker
+            echo "Some Error to install Docker" >> /home/monga/log.txt && echo "Some Error to install Docker"
+          fi
+        fi
+
+        # Workflow Docker-Compose - {Install}
+        # Verify if Docker-Compose are installed
+        if docker-compose --version &> /dev/null; then
+          # Docker Compose Installed Detected
+          echo "Docker-Compose Installed Detected" >> /home/monga/log.txt && echo "Docker-Compose Installed Detected"
+          echo "Version- $(docker-compose --version)" >> /home/monga/log.txt && echo "Version- $(docker-compose --version)"
+        else
+          # Docker-Compose not installed detected
+          echo "Installing Docker-Compose" >> /home/monga/log.txt && echo "Installing Docker-Compose"
+          # Install Docker-Compose on Ubuntu 20.04
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+          # Test Docker-Compose Installation
+          if docker-compose --version &> /dev/null; then
+            # Docker-Compose Installed Detected
+            echo "Docker-Compose Successfully Installed!" >> /home/monga/log.txt && echo "Docker-Compose Successfully Installed!"
+            echo "Version- $(docker-compose --version)" >> /home/monga/log.txt && echo "Version- $(docker-compose --version)"
+          else
+            # Some Error to Install Docker-Compose
+            echo "Some Error to Install Docker-Compose" >> /home/monga/log.txt && echo "Some Error to Install Docker-Compose"
+          fi
+        fi
+
         # Update your software repositories.
         sudo apt-get update
         sudo apt-get upgrade
 
-        # Deploy Portainer Docker Container
-        docker run -d -p 9090:9090 --name portainer-web-docker -v data:/data -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer --restart unless-stopped
+        # Workflow Web Portainer
+        # Verify if docker container 'portainer-web-docker' exist
+        if ! docker ps -q --filter "name=portainer-web-docker" &> /dev/null; then
+          # Container 'portainer-web-docker' not exist. Creating...
+          echo "Container 'portainer-web-docker' not exist. Creating..." >> /home/monga/log.txt && echo "Container 'portainer-web-docker' not exist. Creating..."
+          docker run -d -p 9090:9090 --name portainer-web-docker -v data:/data -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer --restart unless-stopped
+        else
+          # Container 'portainer-web-docker' exist.
+          echo "Container 'portainer-web-docker' Exist!" >> /home/monga/log.txt && echo "Container 'portainer-web-docker' Exist!"
+          docker ps -q --filter "name=portainer-web-docker" >> /home/monga/log.txt && docker ps -q --filter "name=portainer-web-docker"
+        fi
 
         # Complete configuration Ubuntu: Startship, Nerd-Fonts, LSD, ZSH, Oh-My-Zsh
-        cd cd /home/monga/monga-server-handle/.config/Server-Ubuntu
-        ./install_powerline.sh
-        ./install_terminal.sh
-        ./install_profile.sh
+        echo "Configure Terminal Profile"
+        echo $(pwd)
+        cd /home/monga/monga-server-handle/server-config/Server-Ubuntu
+        sudo ./install_powerline.sh
+        sudo ./install_terminal.sh
+        sudo ./install_profile.sh
+        
+        # Finalize /home/monga/log.txt
+        echo "Finalize Deploy" >> /home/monga/log.txt && echo "Finalize Deploy"
+
+        cat /home/monga/log.txt
+        LogTime=$(date +"%d%m%y-%HH%M")
+        mv /home/monga/log.txt $LogTime.txt
+
+        # Clone Git Repository
+        #pwd >> /home/monga/log.txt
+        #echo $(pwd)
+        #cd /home/monga/
+        #echo "Git Clone monga-server-handle - $(pwd)" >> /home/monga/log.txt && echo "Git Clone monga-server-handle - $(pwd)"
+        #git clone https://github.com/pobruno/monga-server-handle
+        #cd /home/monga/monga-server-handle/server-config/Server-Ubuntu
+        
+        # Install Docker and Docker-Compose on Ubuntu 20.04 with best practices
+        #curl -fsSL https://get.docker.com -o get-docker.sh
+        #sudo sh get-docker.sh
+        #sudo usermod -aG docker $USER
+        #sudo systemctl enable docker
+        #sudo apt-get install -y docker-compose
+        #sudo systemctl enable docker-compose
+
+
+
+        
 
 
 
