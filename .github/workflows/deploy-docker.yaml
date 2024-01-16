@@ -33,7 +33,7 @@ jobs:
         sudo systemctl enable docker
         sudo apt-get install -y docker-compose
         sudo systemctl enable docker-compose
-        
+
         
         # Update your software repositories.
         sudo apt-get update
@@ -43,6 +43,7 @@ jobs:
         docker run -d -p 9090:9090 --name portainer-web-docker -v data:/data -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer --restart unless-stopped
 
         # Complete configuration Ubuntu: Startship, Nerd-Fonts, LSD, ZSH, Oh-My-Zsh
+        cd cd /home/monga/monga-server-handle/.config/Server-Ubuntu
         ./install_powerline.sh
         ./install_terminal.sh
         ./install_profile.sh
