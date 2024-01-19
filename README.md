@@ -1,9 +1,9 @@
-
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/pobruno/monga-server-data)
 [![GitHub repo size](https://img.shields.io/github/repo-size/pobruno/monga-server-data?label=monga-server-data&logo=git&logoColor=orang)](https://github.com/pobruno/monga-server-data)
 ![GitHub top language](https://img.shields.io/github/languages/top/pobruno/monga-server-data?logo=docker)
 ![GitHub language count](https://img.shields.io/github/languages/count/pobruno/monga-server-data)
 ![GitHub issues](https://img.shields.io/github/issues/pobruno/monga-server-data?logo=github)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpobruno%2Fmonga-server-handle.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpobruno%2Fmonga-server-handle?ref=badge_shield)
 
 # Moga Server Handle
 
@@ -72,3 +72,7 @@ Contributions and feedback are welcome. If you encounter issues or want to add s
 
 _This repository is part of the MongaDev organization's tech and development experiments._
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpobruno%2Fmonga-server-handle.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpobruno%2Fmonga-server-handle?ref=badge_large)
